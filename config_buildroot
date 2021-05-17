@@ -1,6 +1,6 @@
 #
 # Automatically generated file; DO NOT EDIT.
-# Buildroot 2021.02-1000-g1b881d3689 Configuration
+# Buildroot 2021.05-rc1-97-g020149e4cd Configuration
 #
 BR2_HAVE_DOT_CONFIG=y
 BR2_HOST_GCC_AT_LEAST_4_9=y
@@ -160,7 +160,7 @@ BR2_TOOLCHAIN_EXTERNAL=y
 BR2_TOOLCHAIN_EXTERNAL_CUSTOM=y
 # BR2_TOOLCHAIN_EXTERNAL_DOWNLOAD is not set
 BR2_TOOLCHAIN_EXTERNAL_PREINSTALLED=y
-BR2_TOOLCHAIN_EXTERNAL_PATH="${HOME}/x-tools/x86_64-pc-linux-musl"
+BR2_TOOLCHAIN_EXTERNAL_PATH="${HOME}/brconf/x-tools/x86_64-pc-linux-musl"
 BR2_TOOLCHAIN_EXTERNAL_GLIBC=y
 BR2_PACKAGE_HAS_TOOLCHAIN_EXTERNAL=y
 BR2_PACKAGE_PROVIDES_TOOLCHAIN_EXTERNAL="toolchain-external-custom"
@@ -2023,7 +2023,7 @@ BR2_PACKAGE_MONGODB_ARCH_SUPPORTS=y
 #
 
 #
-# bullet needs a toolchain w/ C++, dynamic library
+# bullet needs a toolchain w/ C++, dynamic library, wchar
 #
 # BR2_PACKAGE_CAIRO is not set
 
