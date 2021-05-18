@@ -6,27 +6,52 @@ CT_NG := ${WORKDIR}/crosstool-ng
 TESTDIR := ${BUILDROOT}/output/images/test
 
 
+
 download:
+	if [ ! -d ${BUILDROOT} ]; \
+	then \
+		git clone git://git.buildroot.net/buildroot; \
+	fi
+	if [ ! -d ${CT_NG} ]; \
+	then \
+		git clone https://github.com/crosstool-ng/crosstool-ng; \
+	fi
+
+
+install: download
 	
-	git clone git://git.buildroot.net/buildroot
-	git clone https://github.com/crosstool-ng/crosstool-ng
-	${CT_NG}/bootstrap && ${CT_NG}/configure && make -C ${CT_NG} && sudo make install -C ${CT_NG}
-build:
-	
-	cp ${WORKDIR}/config_crosstool ${CT_NG}/.config
+	if [ ! -f '${CT_NG}/ct-ng' ]; \
+	then \
+		cd ${CT_NG} && ./bootstrap; \
+		cd ${CT_NG} && ./configure; \
+		cd ${CT_NG} && make && sudo make install; \
+	fi
+
+
+build: install
+	export CT_TOOLCHAIN=${WORKDIR}/x-tools;	\
+	cp ${WORKDIR}/config_crosstool ${CT_NG}/.config; \
 	cp ${WORKDIR}/config_buildroot ${BUILDROOT}/.config
 	cd ${CT_NG} && ./ct-ng build
-	make all -C ${BUILDROOT}
+	make -C ${BUILDROOT}; \
+	if [ $$? -ne 0 ]; then \
+		rm ${BUILDROOT}/output/target/etc/ld.so.conf; \
+		make -C ${BUILDROOT}; \
+	fi
 
 
 test:
-	#mkdir ${TESTDIR}
+	if [ -d ${TESTDIR} ]; then \
+		rm -rf ${TESTDIR}; \
+	fi
+	mkdir ${TESTDIR}
 	tar -xf ${BUILDROOT}/output/images/rootfs.tar -C ${TESTDIR}
 	sudo chroot ${TESTDIR} touch test
-	EXIT_CODE=$$?;\
-	echo "exit: $$EXIT_CODE"
-	
-
+	if [ $$? -eq 0 ]; then \
+		echo "Test OK"; \
+	else \
+		echo "Test failed"; \
+	fi
 
 clean:
 	${CT_NG}/ct-ng clean
@@ -37,4 +62,5 @@ distclean:
 	${CT_NG}/ct-ng distclean
 	make distclean -C ${BUILDROOT}
 
-all: download build test
+
+all: download install build test
