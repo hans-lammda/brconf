@@ -31,13 +31,13 @@ install: download
 build: install
 	export CT_TOOLCHAIN=${WORKDIR}/x-tools;	\
 	cp ${WORKDIR}/config_crosstool ${CT_NG}/.config; \
-	cp ${WORKDIR}/config_buildroot ${BUILDROOT}/.config
+	cp ${WORKDIR}/config_buildroot ${BUILDROOT}/.config; \
 	cd ${CT_NG} && ./ct-ng build
 	make -C ${BUILDROOT}; \
-	if [ $$? -ne 0 ]; then \
-		rm ${BUILDROOT}/output/target/etc/ld.so.conf; \
-		make -C ${BUILDROOT}; \
-	fi
+	#if [ $$? -ne 0 ]; then \
+	#	rm ${BUILDROOT}/output/target/etc/ld.so.conf; \
+	#	make -C ${BUILDROOT}; \
+	#fi
 
 
 test:
