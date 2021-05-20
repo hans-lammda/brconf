@@ -34,10 +34,10 @@ build: install
 	cp ${WORKDIR}/config_buildroot ${BUILDROOT}/.config; \
 	cd ${CT_NG} && ./ct-ng build
 	make -C ${BUILDROOT}; \
-	#if [ $$? -ne 0 ]; then \
-	#	rm ${BUILDROOT}/output/target/etc/ld.so.conf; \
-	#	make -C ${BUILDROOT}; \
-	#fi
+	if [ $$? -ne 0 ]; then \
+		rm ${BUILDROOT}/output/target/etc/ld.so.conf; \
+		make -C ${BUILDROOT}; \
+	fi
 
 
 test:
