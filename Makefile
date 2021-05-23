@@ -5,7 +5,7 @@ BUILDROOT := ${WORKDIR}/buildroot
 CT_NG := ${WORKDIR}/crosstool-ng
 TESTDIR := ${BUILDROOT}/output/images/test
 
-
+.PHONY: buildroot
 
 download:
 	if [ ! -d ${BUILDROOT} ]; \
@@ -27,17 +27,25 @@ install: download
 		cd ${CT_NG} && make && sudo make install; \
 	fi
 
+buildroot:
+	cp ${WORKDIR}/config_buildroot_crosstool ${BUILDROOT}/.config;
+	make -C ${BUILDROOT};
+	
+	
+buildroot_ct:
+	export CT_TOOLCHAIN=${WORKDIR}/x-tools; \
+	cp ${WORKDIR}/config_buildroot_ext_crosstool ${BUILDROOT}/.config; \
+	make -C ${BUILDROOT};
 
-build: install
+crosstool: install
 	export CT_TOOLCHAIN=${WORKDIR}/x-tools;	\
 	cp ${WORKDIR}/config_crosstool ${CT_NG}/.config; \
-	cp ${WORKDIR}/config_buildroot ${BUILDROOT}/.config; \
 	cd ${CT_NG} && ./ct-ng build
-	make -C ${BUILDROOT}; \
-	if [ $$? -ne 0 ]; then \
-		rm ${BUILDROOT}/output/target/etc/ld.so.conf; \
-		make -C ${BUILDROOT}; \
-	fi
+	#make -C ${BUILDROOT}; \
+	#if [ $$? -ne 0 ]; then \
+	#	rm ${BUILDROOT}/output/target/etc/ld.so.conf; \
+	#	make -C ${BUILDROOT}; \
+	#fi
 
 
 test:
@@ -63,4 +71,4 @@ distclean:
 	make distclean -C ${BUILDROOT}
 
 
-all: download install build test
+all: download install crosstool buildroot_ct test clean buildroot test
