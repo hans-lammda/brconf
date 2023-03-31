@@ -22,14 +22,19 @@ dwnld_ct:
 	fi
 
 
-install: dwnld_ct
+crosstool_build:
 	
 	if [ ! -f '${CT_NG}/ct-ng' ]; \
 	then \
 		cd ${CT_NG} && ./bootstrap; \
 		cd ${CT_NG} && ./configure; \
-		cd ${CT_NG} && make && sudo make install; \
+		cd ${CT_NG} && make &&  make install; \
 	fi
+
+crosstool_config:
+	export CT_TOOLCHAIN=${WORKDIR}/x-tools; \
+	cp ${WORKDIR}/config_crosstool ${CT_NG}/.config; \
+	cd ${CT_NG} && ./ct-ng build 
 
 	
 	
