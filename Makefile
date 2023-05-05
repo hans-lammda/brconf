@@ -82,3 +82,21 @@ distclean:
 
 
 all: download install crosstool buildroot_ct test
+
+CC_TOP = ${WORKDIR}/x-tools
+CROSS_COMP_PATH        = $(CC_TOP)/x86_64-pc-linux-musl
+CROSS_COMP_PREFIX      = x86_64-pc-linux-musl-
+CROSS_COMPILE          = $(CROSS_COMP_PATH)/bin/$(CROSS_COMP_PREFIX)
+CROSS_COMPILER_CFLAGS  = -I$(CROSS_COMP_DIR)/include  -ffreestanding -mgeneral-regs-only -nostdinc  -ffunction-sections -fdata-sections  -fno-stack-protector --no-common
+
+CC                     = $(CROSS_COMPILE)gcc
+LD                     = $(CROSS_COMPILE)ld
+OBJCOPY                = $(CROSS_COMPILE)objcopy
+
+hello_static: 
+	$(CC) hello.c --static -o hello_static
+
+hello_musl: 
+	$(CC) hello.c  -o hello_musl
+
+
