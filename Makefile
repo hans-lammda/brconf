@@ -89,6 +89,7 @@ CROSS_COMP_PREFIX      = x86_64-pc-linux-musl-
 CROSS_COMPILE          = $(CROSS_COMP_PATH)/bin/$(CROSS_COMP_PREFIX)
 CROSS_COMPILER_CFLAGS  = -I$(CROSS_COMP_DIR)/include  -ffreestanding -mgeneral-regs-only -nostdinc  -ffunction-sections -fdata-sections  -fno-stack-protector --no-common
 
+CROSS_COMPILE = 
 CC                     = $(CROSS_COMPILE)gcc
 LD                     = $(CROSS_COMPILE)ld
 OBJCOPY                = $(CROSS_COMPILE)objcopy
@@ -98,5 +99,17 @@ hello_static:
 
 hello_musl: 
 	$(CC) hello.c  -o hello_musl
+
+dl:
+	gcc -rdynamic -o dl dl.c -ldl
+good:
+	gcc -shared -fPIC -o hello_lib.so good_lib.c
+bad:
+	gcc -shared -fPIC -o hello_lib.so bad_lib.c
+
+plugin: dl good 
+
+clean_code: 
+	rm -f hello hello_static hello_musl dl  hello_lib.so
 
 
